@@ -16,26 +16,26 @@ DEFAULT_ATTRIBUTE_LIST_MAPPING = {
 }
 
 DEFAULT_ANKI_CSV_HEADER_LINES = [
-  "#separator:tab",
-  "#html:true",
-  "#guid column:1",
-  "#notetype column:2",
-  "#deck column:3",
-  "#tags column:9"
+  '#separator:tab',
+  '#html:true',
+  '#guid column:1',
+  '#notetype column:2',
+  '#deck column:3',
+  '#tags column:9'
 ]
 
 class Note:
   def __init__(
       self,
-      guid: str = "",
+      guid: str = '',
       notetype: str = DEFAULT_NOTE_TYPE,
       deck: str = DEFAULT_DECK,
-      korean: str = "",
-      french: str = "",
-      sound: str = "",
-      precision: str = "",
-      context: str = "",
-      tags: str = ""
+      korean: str = '',
+      french: str = '',
+      sound: str = '',
+      precision: str = '',
+      context: str = '',
+      tags: str = ''
   ):
     self.guid = guid
     self.notetype = notetype
