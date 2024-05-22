@@ -24,7 +24,7 @@ def get_korean_words_list(file_name: str) -> list[str]:
   
   return words
 
-korean_words = get_korean_words_list("./ExampleData/NewWords.txt")
+korean_words = get_korean_words_list("./TestInput/NewWords.txt")
 
 errors: list[list[str]] = []
 new_notes: list[Note] = []
