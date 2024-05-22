@@ -120,8 +120,6 @@ def get_note_from_korean(
   sound = get_sound(korean, search_soup, download, download_folder)
 
   new_note = Note(
-    notetype='Korean Words Type Answer',
-    deck='Coréen::Vocabulaire',
     korean=korean,
     french=french,
     precision=precision,

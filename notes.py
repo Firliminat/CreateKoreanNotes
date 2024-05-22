@@ -1,5 +1,8 @@
 import csv
 
+DEFAULT_NOTE_TYPE = 'Korean Words Type Answer'
+DEFAULT_DECK = 'Coréen::Vocabulaire'
+
 DEFAULT_ATTRIBUTE_LIST_MAPPING = {
   'guid': 0,
   'notetype': 1,
@@ -25,8 +28,8 @@ class Note:
   def __init__(
       self,
       guid: str = "",
-      notetype: str = "",
-      deck: str = "",
+      notetype: str = DEFAULT_NOTE_TYPE,
+      deck: str = DEFAULT_DECK,
       korean: str = "",
       french: str = "",
       sound: str = "",
