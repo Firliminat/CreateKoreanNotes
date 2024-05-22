@@ -2,7 +2,6 @@ import re
 import requests
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
 from notes import Note
 
