@@ -5,37 +5,34 @@ from bs4 import BeautifulSoup
 
 from notes import Note
 
-API_URL = "https://krdict.korean.go.kr/api"
-API_KEY = "DUMMY_APY_KEY"
+API_URL = 'https://krdict.korean.go.kr/api'
+API_KEY = 'DUMMY_APY_KEY'
 
-def get_word_soup_from_korean(korean: str) -> BeautifulSoup:
+def get_search_soup_from_korean(korean: str) -> BeautifulSoup:
   params = {
-    "key": API_KEY,
-    "part":"word",
-    "q": korean,
-    "translated":"y",
-    "trans_lang":"3",
-    "advanced":"y",
-    "method":"exact"
+    'key': API_KEY,
+    'part':'word',
+    'q': korean,
+    'translated':'y',
+    'trans_lang':'3',
+    'advanced':'y',
+    'method':'exact'
   }
-  request_url = API_URL + "/search?" + urlencode(params)
+  request_url = API_URL + '/search?' + urlencode(params)
+
   response = requests.get(request_url)
+  response.raise_for_status()
 
-  word_soup = BeautifulSoup(response.content, "xml")
-  items = word_soup.find_all('item')
+  search_soup = BeautifulSoup(response.content, 'xml')
 
-  if len(items) > 0:
-    return word_soup
-  else:
-    raise ValueError('No word found for ' + korean)
+  error = search_soup.find('error')
+  assert error == None, (
+    'Error with request to dictionary for ' + korean,
+    'error_code: ' + error.find('error_code').text.strip(),
+    'message: ' + error.find('message').text.strip()
+  )
 
-def get_korean(word_soup: BeautifulSoup) -> str:
-  for word in word_soup.find_all('word'):
-    korean = word.text.strip()
-    if korean != '':
-      return korean
-    
-  raise TypeError('No korean found')
+  return search_soup
 
 def get_french(word: BeautifulSoup) -> str:
   french = ''
@@ -46,30 +43,51 @@ def get_french(word: BeautifulSoup) -> str:
 
   return french.removesuffix(', ')
 
-def get_sound(word: BeautifulSoup,
+def get_sound(
+  korean: str,
+  search_soup: BeautifulSoup,
   download: bool,
   download_folder: str
 ) -> str:
-  korean = get_korean(word)
   file_name = korean + '.mp3'
 
   if download:
-    link = word.find('item').find('link').text
+    found_words = search_soup.find_all('item')
 
-    response = requests.get(link)
-    soup = BeautifulSoup(response.content, "lxml")
-    regexp = re.compile(r".*\(\'(.*?)\'\).*")
-    try:
-      href = soup.find("a", class_="sound")['href']
-    except Exception as e:
-      raise ValueError('No sound found for ' + korean + ' | ' + repr(e))
+    # Trying yo find a pronunciation sound for each found word
+    # Stopping as soon as we get one
+    for word in found_words:
+      # Find url of the word page
+      link = word.find('link').text
+      page_response = requests.get(link)
+      page_response.raise_for_status()
+
+      word_page_soup = BeautifulSoup(page_response.content, 'lxml')
+
+      sound_link_elt = word_page_soup.find('a', class_='sound')
+      # No pronunciation sound on this page
+      if sound_link_elt == None or not sound_link_elt.has_attr('href'):
+         # Jumping to next word
+         continue
       
-    sound_link = regexp.sub(r'\1', href)
+      sound_link: str = sound_link_elt['href']
+      # Correctly formatting the link for download
+      link_decode_regexp = re.compile(r'.*\(\'(.*?)\'\).*')
+      sound_link = link_decode_regexp.sub(r'\1', sound_link).strip()
 
-    out_file = download_folder + '/' + file_name
-    with open(out_file, 'wb') as output:
-      response = requests.get(sound_link)
-      output.write(response.content)
+      # Downloading the pronunciation sound
+      out_file = download_folder + '/' + file_name
+      with open(out_file, 'wb') as output:
+        sound_response = requests.get(sound_link)
+        sound_response.raise_for_status()
+
+        # TODO: Check content-type
+        # TODO: Check content ?
+        # We write the content to the file
+        output.write(sound_response.content)
+    
+      # Once the download is complete we don't need to look on other word pages
+      break
   
   return '[sound:' + file_name + ']'
 
@@ -85,15 +103,30 @@ def get_precision(word: BeautifulSoup) -> str:
 
   return precision.removesuffix('<br>')
 
-def get_note_from_korean(korean: str, download=False, download_folder='./') -> Note:
-  word_soup = get_word_soup_from_korean(korean)
-  note = Note()
-  note.notetype = 'Korean Words Type Answer'
-  note.deck = 'Coréen::Vocabulaire'
-  note.korean = get_korean(word_soup)
-  note.french = get_french(word_soup)
-  note.precision = get_precision(word_soup)
-  note.sound = get_sound(word_soup, download, download_folder)
+def get_note_from_korean(
+  korean: str,
+  download=False,
+  download_folder='./'
+) -> Note:
+  search_soup = get_search_soup_from_korean(korean)
+  nb_words_found = len(search_soup.find_all('item'))
+  assert nb_words_found > 0, 'No word found for ' + korean
 
-  return note
+  french = get_french(search_soup)
+  assert french != '', 'No french translation found for ' + korean
+
+  precision = get_precision(search_soup)
+
+  sound = get_sound(korean, search_soup, download, download_folder)
+
+  new_note = Note(
+    notetype='Korean Words Type Answer',
+    deck='Coréen::Vocabulaire',
+    korean=korean,
+    french=french,
+    precision=precision,
+    sound=sound
+  )
+
+  return new_note
 

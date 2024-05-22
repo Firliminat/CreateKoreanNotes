@@ -3,6 +3,8 @@ from tqdm import tqdm
 from notes import Note, from_csv_file, to_csv_file
 from dict_api import get_note_from_korean
 
+DEBUG = True
+
 # notes, header_lines = from_csv_file('ExampleData/Coréen__Nouveau_Vocabulaire.txt')
 # to_csv_file(
 #   notes,
@@ -24,28 +26,30 @@ def get_korean_words_list(file_name: str) -> list[str]:
   
   return words
 
-korean_words = get_korean_words_list("./TestInput/NewWords.txt")
+korean_words = get_korean_words_list('./TestInput/NewWords.txt')
 
-errors: list[list[str]] = []
+errors_csv_file = open('./TestOutput/Errors.txt', 'w', newline='\n')
+errors_writer = csv.writer(
+  errors_csv_file,
+  delimiter='\t',
+  quoting=csv.QUOTE_ALL,
+  quotechar='"'
+)
+errors: list[Exception] = []
 new_notes: list[Note] = []
 for word in tqdm(korean_words):
   try:
     new_note = get_note_from_korean(word, True, './TestOutput/Media')
     new_notes.append(new_note)
-  except ValueError as e:
-    errors.append([word, repr(e)])
-
-
-with open('./TestOutput/Errors.txt', 'w', newline='\n') as csv_file:
-  output_writer = csv.writer(
-    csv_file,
-    delimiter='\t',
-    quoting=csv.QUOTE_ALL,
-    quotechar='"'
-  )
-  output_writer.writerows(errors)
+  except Exception as e:
+    errors_writer.writerow([word, repr(e)])
+    errors.append(e)
+errors_csv_file.close()
 
 to_csv_file(
   new_notes,
   'TestOutput/Coréen__Vocabulaire_new.txt'
 )
+
+if DEBUG and len(errors) > 0:
+  raise Exception(errors)
