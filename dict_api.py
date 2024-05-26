@@ -39,9 +39,10 @@ def get_french(word: BeautifulSoup) -> str:
   for trans_word in word.find_all('trans_word'):
     main_trans = trans_word.text.split(',', 1)[0].strip().capitalize()
     if main_trans != '':
-      french += main_trans + ', '
+      french = main_trans
+      break
 
-  return french.removesuffix(', ')
+  return french
 
 def get_sound(
   korean: str,
@@ -91,15 +92,15 @@ def get_sound(
   
   return '[sound:' + file_name + ']'
 
-def get_precision(word: BeautifulSoup) -> str:
+def get_precision(word: BeautifulSoup, french = '') -> str:
   precision = ''
   for trans_word in word.find_all('trans_word'):
     try:
-      remaining_trans = trans_word.text.split(',', 1)[1].strip().capitalize()
+      remaining_trans = trans_word.text.strip().capitalize().removeprefix(french + ', ')
     except:
       remaining_trans = ''
     if remaining_trans != '':
-      precision += remaining_trans + '<br>'
+      precision += remaining_trans.strip().capitalize() + '<br>'
 
   return precision.removesuffix('<br>')
 
@@ -115,7 +116,7 @@ def get_note_from_korean(
   french = get_french(search_soup)
   assert french != '', 'No french translation found for ' + korean
 
-  precision = get_precision(search_soup)
+  precision = get_precision(search_soup, french)
 
   sound = get_sound(korean, search_soup, download, download_folder)
 
