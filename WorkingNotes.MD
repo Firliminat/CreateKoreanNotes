@@ -29,7 +29,7 @@ TODO : Accessible via l'API?
 ## Ajouter à Anki
 
 - Notes : Par CSV. cf : ExampleData
-- Media : Coller dans ~/.local/share/Anki2
+- Media : Coller dans ~/.local/share/Anki2/Alex/collection.media/
 
 ### Autes fonctionnalitées
 
