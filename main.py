@@ -1,6 +1,7 @@
 import csv
 from tqdm import tqdm
-from notes import Note, from_csv_file, to_csv_file
+from notes import Note
+from deck import Deck
 from dict_api import get_note_from_korean
 
 DEBUG = True
@@ -36,20 +37,17 @@ errors_writer = csv.writer(
   quotechar='"'
 )
 errors: list[Exception] = []
-new_notes: list[Note] = []
+new_deck = Deck()
 for word in tqdm(korean_words):
   try:
     new_note = get_note_from_korean(word, True, './TestOutput/Media')
-    new_notes.append(new_note)
+    new_deck.update(new_note)
   except Exception as e:
     errors_writer.writerow([word, repr(e)])
     errors.append(e)
 errors_csv_file.close()
 
-to_csv_file(
-  new_notes,
-  'TestOutput/Coréen__Vocabulaire_new.txt'
-)
+new_deck.to_csv_file('TestOutput/Coréen__Vocabulaire_new.txt')
 
 if DEBUG and len(errors) > 0:
   raise Exception(errors)
