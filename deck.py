@@ -29,8 +29,8 @@ class Deck(dict[str, Note]):
     newline: str = '\n',
     delimiter: str = '\t',
     quotechar:str = '"'
-  ) -> tuple[list[Note], list[str]]:
-    new_deck: cls
+  ):
+    new_deck: cls = cls()
 
     with open(file_name, newline=newline) as csv_file:
       input_reader = csv.reader(
