@@ -94,13 +94,34 @@ def get_sound(
 
 def get_precision(word: BeautifulSoup, french = '') -> str:
   precision = ''
-  for trans_word in word.find_all('trans_word'):
+  all_trans_words = [french.lower()]
+  for meaning in word.find_all('trans_word'):
     try:
-      remaining_trans = trans_word.text.strip().capitalize().removeprefix(french + ', ')
+      meaning_str = meaning.text
     except:
-      remaining_trans = ''
-    if remaining_trans != '':
-      precision += remaining_trans.strip().capitalize() + '<br>'
+      meaning_str = ''
+
+    # Getting the list of translation words for this meaning
+    curr_trans_words = list(map(
+      lambda trans : trans.strip().lower(),
+      meaning.text.split(', ')
+    ))
+
+    # Removing all the words already present in a previous meaning
+    for trans_word in all_trans_words:
+      curr_trans_words = list(filter(
+        lambda a: a != trans_word,
+        curr_trans_words
+      ))
+
+    # Adding the remaining words to the already seen words accumulator
+    all_trans_words += curr_trans_words
+
+    # Creating the string for the current meaning
+    # And adding it to the return accumulator if not empty
+    meaning_str = ', '.join(curr_trans_words).strip().capitalize()
+    if meaning_str != '':
+      precision += meaning_str + '<br>'
 
   return precision.removesuffix('<br>')
 
