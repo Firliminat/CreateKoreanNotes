@@ -78,7 +78,7 @@ class Deck(dict[str, Note]):
   
   def has_korean(self, note: str | Note) -> bool:
     cmp_val = note
-    if note is Note:
+    if isinstance(note, Note):
       cmp_val = note.korean
     
     return next(
@@ -89,7 +89,7 @@ class Deck(dict[str, Note]):
   
   def has_french(self, note: str | Note) -> bool:
     cmp_val = note
-    if note is Note:
+    if isinstance(note, Note):
       cmp_val = note.french
     
     return next(
