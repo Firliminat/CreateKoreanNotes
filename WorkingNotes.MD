@@ -18,30 +18,35 @@ Un exemple de requête : https://krdict.korean.go.kr/api/search?key=DUMMY_APY_KE
 
 API Key : Emails
 
-### Exemple de prononciation
+### Exemple de prononciation audio
 
-Disponible sur le dictionnaire
+Disponible sur le dictionnaire ✅
+=> Pas toujours dispo ❌
 
-TODO : Accessible via l'API?
+TODO : Accessible via l'API ✅
 
-=> Backup : https://ttsmp3.com/text-to-speech/Korean/
+=> Backup : https://ttsmp3.com/text-to-speech/Korean/ ❓
 
 ## Ajouter à Anki
 
-- Notes : Par CSV. cf : ExampleData
-- Media : Coller dans ~/.local/share/Anki2/Alex/collection.media/
+- Notes : Par CSV. cf : ExampleData ✅
+- Media : Coller dans ~/.local/share/Anki2/Alex/collection.media/ ✅
 
 ### Autes fonctionnalitées
 
-- Expressions ?
-- Mots dérivés (... + 하다)
-- Ne pas ajouter cartes existantes ?
-- Contexte : Indiquer si plusieurs cartes ont le même sens 
-- Prononciation en Hangul : Dispo dans le dictionnaire
-- Catégorie grammaticale : Dispo dans le dictionnaire
-- Sous-deck : Manuel ? :/
+- Tags : Indiquer si le mot en coréen existes déjà ✅
+- Tags : Indiquer si plusieurs cartes ont le même sens ✅
+- Supprimer les doublons en français ✅ 
+- Expressions ❓
+- Mots dérivés (... + 하다) ❓
+- Prononciation en Hangul : Dispo dans le dictionnaire ❓
+- Catégorie grammaticale : Dispo dans le dictionnaire ❓
+- Sous-deck :
+   - Full automaique ❌
+   - Possible d'ajouter des tags selon les catégories du dictionnaire ❓
+- Conjuguaisons ❓
 
 ### Anomalies
 
-- Mots sans son ?
-- Plusieurs fois la même erreur ?
+- Mots sans son ? Utiliser le back up ❓
+- Plusieurs fois la même erreur ? => Améliorer la gestion des erreurs  ✅
