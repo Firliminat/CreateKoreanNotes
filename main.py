@@ -8,7 +8,7 @@ DEBUG = True
 
 def get_korean_words_list(file_name: str) -> list[str]:
   words: list[str] = []
-  with open(file_name, newline='\n') as csv_file:
+  with open(file_name, newline='\n' , encoding='utf-8') as csv_file:
     input_reader = csv.reader(
       csv_file,
       delimiter='\t',
@@ -25,7 +25,12 @@ existing_deck, header_lines = Deck.from_csv_file('./TestInput/Coréen__Vocabulai
 
 new_korean_words = get_korean_words_list('./TestInput/NewWords.txt')
 
-errors_csv_file = open('./TestOutput/Errors.txt', 'w', newline='\n')
+errors_csv_file = open(
+  './TestOutput/Errors.txt',
+  'w',
+  newline='\n',
+  encoding='utf-8'
+)
 errors_writer = csv.writer(
   errors_csv_file,
   delimiter='\t',

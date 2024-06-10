@@ -32,7 +32,7 @@ class Deck(dict[str, Note]):
   ):
     new_deck: cls = cls()
 
-    with open(file_name, newline=newline) as csv_file:
+    with open(file_name, newline=newline, encoding='utf-8') as csv_file:
       input_reader = csv.reader(
         csv_file,
         delimiter=delimiter,
@@ -65,7 +65,7 @@ class Deck(dict[str, Note]):
     delimiter='\t',
     quotechar='"'
   ):
-    with open(file_name, 'w', newline=newline) as csv_file:
+    with open(file_name, 'w', newline=newline, encoding='utf-8') as csv_file:
       output_writer = csv.writer(
         csv_file,
         delimiter=delimiter,
