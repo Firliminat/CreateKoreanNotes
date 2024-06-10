@@ -45,10 +45,10 @@ for word in tqdm(new_korean_words):
 
     # Tagging duplicates
     if existing_deck.has_korean(new_note) or new_deck.has_korean(new_note):
-      new_note.tags += 'KrDup' + ', '
+      new_note.tags += 'KrDup' + ' '
     if existing_deck.has_french(new_note) or new_deck.has_french(new_note):
-      new_note.tags += 'FrDup' + ', '
-    new_note.tags = new_note.tags.removesuffix(', ')
+      new_note.tags += 'FrDup' + ' '
+    new_note.tags = new_note.tags.removesuffix(' ')
 
     new_deck.update(new_note)
   except Exception as e:
