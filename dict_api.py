@@ -4,9 +4,9 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 
 from notes import Note
+from APIKey import API_KEY
 
 API_URL = 'https://krdict.korean.go.kr/api'
-API_KEY = 'DUMMY_APY_KEY'
 
 def get_search_soup_from_korean(korean: str) -> BeautifulSoup:
   params = {
